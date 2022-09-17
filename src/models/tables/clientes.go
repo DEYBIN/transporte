@@ -4,7 +4,7 @@ import "transporte/src/models"
 
 func Clientes_GetSchema() ([]models.Base, string) {
 	var Clientes []models.Base
-	tableName := "Fina_" + "Clientes"
+	tableName := "Clientes"
 	Clientes = append(Clientes, models.Base{
 		Name:        "c_docu",
 		Description: "c_docu",
@@ -20,6 +20,7 @@ func Clientes_GetSchema() ([]models.Base, string) {
 		Name:        "n_docu",
 		Description: "n_docu",
 		Required:    true,
+		Important:   true,
 		Type:        "string",
 		Strings: models.Strings{
 			Expr: *models.Number_DB(),
@@ -35,7 +36,7 @@ func Clientes_GetSchema() ([]models.Base, string) {
 		Type:        "string",
 		Strings: models.Strings{
 			Expr:      *models.Null(),
-			Min:       10,
+			Min:       3,
 			Max:       100,
 			UpperCase: true,
 		},
@@ -43,7 +44,6 @@ func Clientes_GetSchema() ([]models.Base, string) {
 	Clientes = append(Clientes, models.Base{
 		Name:        "k_gene",
 		Description: "k_gene",
-		Required:    true,
 		Update:      true,
 		Type:        "uint64",
 		Uint: models.Uints{
@@ -69,7 +69,7 @@ func Clientes_GetSchema() ([]models.Base, string) {
 		Type:        "string",
 		Strings: models.Strings{
 			Expr:      *models.Null(),
-			Min:       40.000000,
+			Min:       20,
 			Max:       400,
 			UpperCase: true,
 		},
@@ -77,12 +77,11 @@ func Clientes_GetSchema() ([]models.Base, string) {
 	Clientes = append(Clientes, models.Base{
 		Name:        "l_refe",
 		Description: "l_refe",
-		Required:    true,
 		Update:      true,
 		Type:        "string",
 		Strings: models.Strings{
 			Expr:      *models.Null(),
-			Min:       40,
+			Min:       20,
 			Max:       400,
 			UpperCase: true,
 		},
@@ -102,7 +101,6 @@ func Clientes_GetSchema() ([]models.Base, string) {
 	Clientes = append(Clientes, models.Base{
 		Name:        "n_tele",
 		Description: "n_tele",
-		Required:    true,
 		Update:      true,
 		Type:        "string",
 		Strings: models.Strings{
@@ -127,7 +125,6 @@ func Clientes_GetSchema() ([]models.Base, string) {
 	Clientes = append(Clientes, models.Base{
 		Name:        "l_obse",
 		Description: "l_obse",
-		Required:    true,
 		Update:      true,
 		Type:        "string",
 		Strings: models.Strings{

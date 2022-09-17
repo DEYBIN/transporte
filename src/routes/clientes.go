@@ -20,14 +20,14 @@ func RutasCliente(r *mux.Router) {
 	s.Handle("/update/info-reg-o/data/{n_docu}", middleware.Autentication(http.HandlerFunc(updateCliente))).Methods("PUT")
 	s.Handle("/create/info-reg-o/data/", middleware.Autentication(http.HandlerFunc(insertCliente))).Methods("POST")
 }
- 
+
 func allCliente(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content Type", "Aplication-Json")
 	response := controller.NewResponseManager()
 
 	//get allData from database
-	dataCliente := sqlquery.NewQuerys("Cliente").Select("n_docu,l_clie").Exec().All()
-	response.Data["users"] = dataCliente
+	dataCliente := sqlquery.NewQuerys("Clientes").Select("n_docu,l_clie").Exec().All()
+	response.Data["clientes"] = dataCliente
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)
 }
@@ -80,7 +80,7 @@ func updateCliente(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	n_docu := params["n_docu"]
 	if n_docu == "" {
-		response.Msg = "Error to write user"
+		response.Msg = "Error to escribir cliente"
 		response.StatusCode = 400
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(response)
@@ -147,7 +147,7 @@ func oneCLiente(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	//get allData from database
-	dataCliente := sqlquery.NewQuerys("Clientes").Select("n_docu,c_docu,c_clie,k_gene,f_naci,l_dire,l_refe,c_ubig,n_tele,n_celu,l_obse").Where("n_docu", "=", n_docu).Exec().One()
+	dataCliente := sqlquery.NewQuerys("Clientes").Select("c_docu,n_docu,l_clie,k_gene,f_naci,l_dire,l_refe,c_ubig,n_tele,n_celu,l_obse").Where("n_docu", "=", n_docu).Exec().One()
 	response.Data = dataCliente
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)

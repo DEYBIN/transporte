@@ -2,14 +2,13 @@ package tables
 
 import "transporte/src/models"
 
-func ClientesCars_GetSchema_DB() ([]models.Base, string) {
+func ClientesCars_GetSchema() ([]models.Base, string) {
 	var ClientesCars []models.Base
-	tableName := "Fina_" + "ClientesCars"
+	tableName := "ClientesCars"
 	ClientesCars = append(ClientesCars, models.Base{
 		Name:        "c_plac",
 		Description: "c_plac",
 		Required:    true,
-		Update:      true,
 		Type:        "string",
 		Strings: models.Strings{
 			Expr:      *models.Null(),
@@ -22,7 +21,6 @@ func ClientesCars_GetSchema_DB() ([]models.Base, string) {
 		Name:        "n_docu",
 		Description: "n_docu",
 		Required:    true,
-		Update:      true,
 		Type:        "string",
 		Strings: models.Strings{
 			Expr:      *models.Null(),
@@ -35,11 +33,10 @@ func ClientesCars_GetSchema_DB() ([]models.Base, string) {
 		Name:        "l_marc",
 		Description: "l_marc",
 		Required:    true,
-		Update:      true,
 		Type:        "string",
 		Strings: models.Strings{
 			Expr:      *models.Null(),
-			Min:       5.000000,
+			Min:       5,
 			Max:       50,
 			UpperCase: true,
 		},
@@ -48,11 +45,10 @@ func ClientesCars_GetSchema_DB() ([]models.Base, string) {
 		Name:        "l_mode",
 		Description: "l_mode",
 		Required:    true,
-		Update:      true,
 		Type:        "string",
 		Strings: models.Strings{
 			Expr:      *models.Null(),
-			Min:       5.000000,
+			Min:       5,
 			Max:       50,
 			UpperCase: true,
 		},
@@ -65,7 +61,7 @@ func ClientesCars_GetSchema_DB() ([]models.Base, string) {
 		Type:        "string",
 		Strings: models.Strings{
 			Expr:      *models.Null(),
-			Min:       7.000000,
+			Min:       7,
 			Max:       70,
 			UpperCase: true,
 		},
@@ -74,7 +70,6 @@ func ClientesCars_GetSchema_DB() ([]models.Base, string) {
 		Name:        "c_year",
 		Description: "c_year",
 		Required:    true,
-		Update:      true,
 		Type:        "string",
 		Strings: models.Strings{
 			Expr: *models.Null(),
@@ -86,7 +81,6 @@ func ClientesCars_GetSchema_DB() ([]models.Base, string) {
 		Name:        "c_mode",
 		Description: "c_mode",
 		Required:    true,
-		Update:      true,
 		Type:        "string",
 		Strings: models.Strings{
 			Expr: *models.Null(),
@@ -98,21 +92,19 @@ func ClientesCars_GetSchema_DB() ([]models.Base, string) {
 		Name:        "n_seri",
 		Description: "n_seri",
 		Required:    true,
-		Update:      true,
 		Type:        "uint64",
 		Uint: models.Uints{
-			Max: 10,
+			Max: 17,
 		},
 	})
 	ClientesCars = append(ClientesCars, models.Base{
 		Name:        "n_pasa",
 		Description: "n_pasa",
 		Required:    true,
-		Update:      true,
 		Type:        "string",
 		Strings: models.Strings{
 			Expr:      *models.Null(),
-			Min:       2.000000,
+			Min:       2,
 			Max:       20,
 			UpperCase: true,
 		},
@@ -120,12 +112,11 @@ func ClientesCars_GetSchema_DB() ([]models.Base, string) {
 	ClientesCars = append(ClientesCars, models.Base{
 		Name:        "l_obse",
 		Description: "l_obse",
-		Required:    true,
 		Update:      true,
 		Type:        "string",
 		Strings: models.Strings{
 			Expr:      *models.Null(),
-			Min:       10.000000,
+			Min:       5,
 			Max:       100,
 			UpperCase: true,
 		},

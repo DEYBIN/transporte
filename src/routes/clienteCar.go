@@ -15,10 +15,10 @@ import (
 func RutasClienteCar(r *mux.Router) {
 
 	s := r.PathPrefix("/clienteCar").Subrouter()
-	s.Handle("/get/info-cls-a/data/", middleware.Autentication(http.HandlerFunc(allCliente))).Methods("GET")
+	s.Handle("/get/info-cls-a/data/", middleware.Autentication(http.HandlerFunc(allClienteCar))).Methods("GET")
 	s.Handle("/get/info-cla-o/data/{n_docu}", middleware.Autentication(http.HandlerFunc(oneCLiente))).Methods("GET")
 	s.Handle("/update/info-reg-o/data/{n_docu}", middleware.Autentication(http.HandlerFunc(updateCliente))).Methods("PUT")
-	s.Handle("/create/info-reg-o/data/", middleware.Autentication(http.HandlerFunc(insertCliente))).Methods("POST")
+	s.Handle("/create/info-reg-o/data/", middleware.Autentication(http.HandlerFunc(insertClienteCar))).Methods("POST")
 }
 
 func allClienteCar(w http.ResponseWriter, r *http.Request) {
@@ -26,8 +26,8 @@ func allClienteCar(w http.ResponseWriter, r *http.Request) {
 	response := controller.NewResponseManager()
 
 	//get allData from database
-	dataCliente := sqlquery.NewQuerys("Cliente").Select("n_docu,l_clie").Exec().All()
-	response.Data["users"] = dataCliente
+	dataClientesCars := sqlquery.NewQuerys("ClientesCars").Select("l_marc,l_mode,l_color,c_year,c_mode,n_seri,n_pasa").Exec().All()
+	response.Data["clienteCars"] = dataClientesCars
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)
 }
@@ -50,9 +50,9 @@ func insertClienteCar(w http.ResponseWriter, r *http.Request) {
 	var data_insert []map[string]interface{}
 	data_insert = append(data_insert, data_body)
 
-	schema, table := tables.Clientes_GetSchema()
-	cliente := sqlquery.SqlLibExec{}
-	err = cliente.New(data_insert, table).Insert(schema)
+	schema, table := tables.ClientesCars_GetSchema()
+	clienteCar := sqlquery.SqlLibExec{}
+	err = clienteCar.New(data_insert, table).Insert(schema)
 	if err != nil {
 		response.Msg = err.Error()
 		response.StatusCode = 300
@@ -61,7 +61,7 @@ func insertClienteCar(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = cliente.Exec()
+	err = clienteCar.Exec()
 	if err != nil {
 		response.Msg = err.Error()
 		response.StatusCode = 300
