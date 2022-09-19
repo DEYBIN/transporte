@@ -9,6 +9,7 @@ func ClientesCars_GetSchema() ([]models.Base, string) {
 		Name:        "c_plac",
 		Description: "c_plac",
 		Required:    true,
+		Important: true,
 		Type:        "string",
 		Strings: models.Strings{
 			Expr:      *models.Null(),
@@ -24,7 +25,7 @@ func ClientesCars_GetSchema() ([]models.Base, string) {
 		Type:        "string",
 		Strings: models.Strings{
 			Expr:      *models.Null(),
-			Min:       11,
+			Min:       8,
 			Max:       11,
 			UpperCase: true,
 		},
@@ -91,10 +92,13 @@ func ClientesCars_GetSchema() ([]models.Base, string) {
 	ClientesCars = append(ClientesCars, models.Base{
 		Name:        "n_seri",
 		Description: "n_seri",
-		Required:    true,
-		Type:        "uint64",
-		Uint: models.Uints{
-			Max: 17,
+		Required:    false,
+		Type:        "string",
+		Strings: models.Strings{
+			Expr:      *models.Null(),
+			Min:       15,
+			Max:       17,
+			UpperCase: true,
 		},
 	})
 	ClientesCars = append(ClientesCars, models.Base{
