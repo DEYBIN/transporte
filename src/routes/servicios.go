@@ -12,28 +12,27 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func RutasCliente(r *mux.Router) {
+func RutasServicio(r *mux.Router) {
 
-	s := r.PathPrefix("/cliente").Subrouter()
-	s.Handle("/get/info-cls-a/data/", middleware.Autentication(http.HandlerFunc(allCliente))).Methods("GET")
-	s.Handle("/get/info-cla-o/data/{n_docu}", middleware.Autentication(http.HandlerFunc(oneCLiente))).Methods("GET")
-	s.Handle("/update/info-reg-o/data/{n_docu}", middleware.Autentication(http.HandlerFunc(updateCliente))).Methods("PUT")
-	s.Handle("/create/info-reg-o/data/", middleware.Autentication(http.HandlerFunc(insertCliente))).Methods("POST")
+	s := r.PathPrefix("/servicio").Subrouter()
+	s.Handle("/get/info-cls-a/data/", middleware.Autentication(http.HandlerFunc(allServicio))).Methods("GET")
+	s.Handle("/get/info-cla-o/data/{id_serv}", middleware.Autentication(http.HandlerFunc(oneServicio))).Methods("GET")
+	s.Handle("/update/info-reg-o/data/{id_serv}", middleware.Autentication(http.HandlerFunc(updateServicio))).Methods("PUT")
+	s.Handle("/create/info-reg-o/data/", middleware.Autentication(http.HandlerFunc(insertServicio))).Methods("POST")
 }
 
-func allCliente(w http.ResponseWriter, r *http.Request) {
+func allServicio(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content Type", "Aplication-Json")
 	response := controller.NewResponseManager()
 
 	//get allData from database
-	dataCliente := sqlquery.NewQuerys("Clientes").Select("n_docu,l_clie,k_gene,f_naci,l_dire,l_refe,c_ubig,n_tele,n_celu,l_obse").Exec().All()
-	response.Data["clientes"] = dataCliente
+	dataServicio := sqlquery.NewQuerys("Servicios").Select("c_year,c_mes,n_docu,f_fact,s_impo,c_plac,k_stad,f_digi,id_serv").Exec().All()
+	response.Data["servicios"] = dataServicio
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)
 }
 
-//Insert Clientes to DataBase
-func insertCliente(w http.ResponseWriter, r *http.Request) {
+func insertServicio(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content Type", "Aplication-Json")
 	response := controller.NewResponseManager()
 	request_body, err := ioutil.ReadAll(r.Body)
@@ -50,9 +49,9 @@ func insertCliente(w http.ResponseWriter, r *http.Request) {
 	var data_insert []map[string]interface{}
 	data_insert = append(data_insert, data_body)
 
-	schema, table := tables.Clientes_GetSchema()
-	cliente := sqlquery.SqlLibExec{}
-	err = cliente.New(data_insert, table).Insert(schema)
+	schema, table := tables.Servicios_GetSchema()
+	servicio := sqlquery.SqlLibExec{}
+	err = servicio.New(data_insert, table).Insert(schema)
 	if err != nil {
 		response.Msg = err.Error()
 		response.StatusCode = 300
@@ -61,7 +60,7 @@ func insertCliente(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = cliente.Exec()
+	err = servicio.Exec()
 	if err != nil {
 		response.Msg = err.Error()
 		response.StatusCode = 300
@@ -74,13 +73,13 @@ func insertCliente(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response)
 }
 
-func updateCliente(w http.ResponseWriter, r *http.Request) {
+func updateServicio(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content Type", "Aplication-Json")
 	response := controller.NewResponseManager()
 	params := mux.Vars(r)
-	n_docu := params["n_docu"]
-	if n_docu == "" {
-		response.Msg = "Error to escribir cliente"
+	id_serv := params["id_serv"]
+	if id_serv == "" {
+		response.Msg = "Error to write service"
 		response.StatusCode = 400
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(response)
@@ -106,13 +105,13 @@ func updateCliente(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data_body["where"] = map[string]interface{}{"n_docu": n_docu}
+	data_body["where"] = map[string]interface{}{"id_serv": id_serv}
 	var data_update []map[string]interface{}
 	data_update = append(data_update, data_body)
 
-	schema, table := tables.Clientes_GetSchema()
-	cliente := sqlquery.SqlLibExec{}
-	err = cliente.New(data_update, table).Update(schema)
+	schema, table := tables.Servicios_GetSchema()
+	servicio := sqlquery.SqlLibExec{}
+	err = servicio.New(data_update, table).Update(schema)
 	if err != nil {
 		response.Msg = err.Error()
 		response.StatusCode = 300
@@ -121,7 +120,7 @@ func updateCliente(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = cliente.Exec()
+	err = servicio.Exec()
 	if err != nil {
 		response.Msg = err.Error()
 		response.StatusCode = 300
@@ -134,21 +133,21 @@ func updateCliente(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response)
 }
 
-func oneCLiente(w http.ResponseWriter, r *http.Request) {
+func oneServicio(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content Type", "Aplication-Json")
 	response := controller.NewResponseManager()
 	params := mux.Vars(r)
-	n_docu := params["n_docu"]
-	if n_docu == "" {
-		response.Msg = "Error to write Cliente"
+	id_serv := params["id_serv"]
+	if id_serv == "" {
+		response.Msg = "Error to write the service"
 		response.StatusCode = 400
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(response)
 		return
 	}
 	//get allData from database
-	dataCliente := sqlquery.NewQuerys("Clientes").Select("c_docu,n_docu,l_clie,k_gene,f_naci,l_dire,l_refe,c_ubig,n_tele,n_celu,l_obse").Where("n_docu", "=", n_docu).Exec().One()
-	response.Data = dataCliente
+	dataServicio := sqlquery.NewQuerys("Servicios").Select("id_serv,c_year,c_mes,n_docu,f_fact,s_impo,c_plac,k_stad,f_digi").Where("id_serv", "=", id_serv).Exec().One()
+	response.Data = dataServicio
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)
 }
