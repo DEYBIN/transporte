@@ -16,6 +16,7 @@ func RutasServicio(r *mux.Router) {
 
 	s := r.PathPrefix("/servicio").Subrouter()
 	s.Handle("/get/info-cls-a/data/", middleware.Autentication(http.HandlerFunc(allServicio))).Methods("GET")
+	s.Handle("/get/generate-fact/", middleware.Autentication(http.HandlerFunc(serviceFact))).Methods("GET")
 	s.Handle("/get/info-cla-o/data/{id_serv}", middleware.Autentication(http.HandlerFunc(oneServicio))).Methods("GET")
 	s.Handle("/update/info-reg-o/data/{id_serv}", middleware.Autentication(http.HandlerFunc(updateServicio))).Methods("PUT")
 	s.Handle("/create/info-reg-o/data/", middleware.Autentication(http.HandlerFunc(insertServicio))).Methods("POST")
@@ -28,6 +29,18 @@ func allServicio(w http.ResponseWriter, r *http.Request) {
 	//get allData from database
 	dataServicio := sqlquery.NewQuerys("Servicios").Select("c_year,c_mes,n_docu,f_fact,s_impo,c_plac,k_stad,f_digi,id_serv").Exec().All()
 	response.Data["servicios"] = dataServicio
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(response)
+}
+
+
+func serviceFact(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content Type", "Aplication-Json")
+	response := controller.NewResponseManager()
+
+	//get all Data from database
+	dataServicio := sqlquery.NewQuerys("Servicios").Select("n_docu,f_fact,s_impo,k_stad,f_digi,id_serv").Exec().All()
+	response.Data["fact"] = dataServicio
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)
 }

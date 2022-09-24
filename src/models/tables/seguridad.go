@@ -48,7 +48,7 @@ func Seguridad_GetSchema() ([]models.Base, string) {
 		Name:        "l_nomb",
 		Description: "l_nomb",
 		Required:    true,
-		Update: true,
+		Update:      true,
 		Type:        "string",
 		Strings: models.Strings{
 			Expr:      *models.Null(),
@@ -122,7 +122,7 @@ func Seguridad_GetSchema() ([]models.Base, string) {
 		Type:        "string",
 		Strings: models.Strings{
 			Expr:      *models.Null(),
-			Min:       20,
+			Min:       5,
 			Max:       200,
 			Encriptar: true,
 		},
