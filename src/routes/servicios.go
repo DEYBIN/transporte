@@ -16,7 +16,7 @@ func RutasServicio(r *mux.Router) {
 
 	s := r.PathPrefix("/servicio").Subrouter()
 	s.Handle("/get/info-cls-a/data/", middleware.Autentication(http.HandlerFunc(allServicio))).Methods("GET")
-	s.Handle("/get/generate-fact/", middleware.Autentication(http.HandlerFunc(serviceFact))).Methods("GET")
+	s.Handle("/get/generate-fact/{id_serv}", middleware.Autentication(http.HandlerFunc(serviceFact))).Methods("GET")
 	s.Handle("/get/info-cla-o/data/{id_serv}", middleware.Autentication(http.HandlerFunc(oneServicio))).Methods("GET")
 	s.Handle("/update/info-reg-o/data/{id_serv}", middleware.Autentication(http.HandlerFunc(updateServicio))).Methods("PUT")
 	s.Handle("/create/info-reg-o/data/", middleware.Autentication(http.HandlerFunc(insertServicio))).Methods("POST")
@@ -33,13 +33,20 @@ func allServicio(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response)
 }
 
-
 func serviceFact(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content Type", "Aplication-Json")
 	response := controller.NewResponseManager()
-
+	params := mux.Vars(r)
+	id_serv := params["id_serv"]
+	if id_serv == "" {
+		response.Msg = "Error to write the service"
+		response.StatusCode = 400
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
 	//get all Data from database
-	dataServicio := sqlquery.NewQuerys("Servicios").Select("n_docu,f_fact,s_impo,k_stad,f_digi,id_serv").Exec().All()
+	dataServicio := sqlquery.NewQuerys("Servicios").Select("n_docu,f_fact,s_impo,k_stad,f_digi").Where("id_serv", "=", id_serv).Exec().All()
 	response.Data["fact"] = dataServicio
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)

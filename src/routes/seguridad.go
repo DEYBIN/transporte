@@ -19,6 +19,7 @@ func RutasSeguridad(r *mux.Router) {
 	s.Handle("/get/info-cla-o/data/{id}", middleware.Autentication(http.HandlerFunc(oneUser))).Methods("GET")
 	s.Handle("/update/info-reg-o/data/{id}", middleware.Autentication(http.HandlerFunc(updateUser))).Methods("PUT")
 	s.Handle("/create/info-reg-o/data/", middleware.Autentication(http.HandlerFunc(insertUser))).Methods("POST")
+	s.Handle("/generate/n-usr/data/", middleware.Autentication(http.HandlerFunc(generateUser))).Methods("POST")
 }
 
 func allUser(w http.ResponseWriter, r *http.Request) {
@@ -26,7 +27,7 @@ func allUser(w http.ResponseWriter, r *http.Request) {
 	response := controller.NewResponseManager()
 
 	//get allData from database
-	dataUser := sqlquery.NewQuerys("Seguridad").Select("users,l_nomb,l_apl1,l_apl2,id").Exec().All()
+	dataUser := sqlquery.NewQuerys("Seguridad").Select("n_docu,users,l_nomb,l_apl1,l_apl2,id").Exec().All()
 	response.Data["users"] = dataUser
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)
@@ -71,6 +72,10 @@ func insertUser(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)
+}
+//TODO:Generate user 
+func generateUser(w http.ResponseWriter, r *http.Request){
+	
 }
 
 func updateUser(w http.ResponseWriter, r *http.Request) {

@@ -208,7 +208,7 @@ func (q *Querys) Or(where string, args ...interface{}) *Querys {
 	return q
 }
 func (q *Querys) Like(field string, value string) *Querys {
-	q.Query += " " + field + " LIKE " + value
+	q.Query += " WHERE " + field + " LIKE " + "'" + value + "'"
 	return q
 }
 func (q *Querys) AndLike(field string, value string) *Querys {
