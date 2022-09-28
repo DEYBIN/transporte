@@ -44,7 +44,6 @@ func Clientes_GetSchema() ([]models.Base, string) {
 	Clientes = append(Clientes, models.Base{
 		Name:        "k_gene",
 		Description: "k_gene",
-		Update:      true,
 		Type:        "uint64",
 		Uint: models.Uints{
 			Max: 10,
@@ -54,7 +53,6 @@ func Clientes_GetSchema() ([]models.Base, string) {
 		Name:        "f_naci",
 		Description: "f_naci",
 		Required:    true,
-		Update:      true,
 		Type:        "string",
 		Strings: models.Strings{
 			Expr: *models.Null(),
@@ -90,7 +88,6 @@ func Clientes_GetSchema() ([]models.Base, string) {
 		Name:        "c_ubig",
 		Description: "c_ubig",
 		Required:    true,
-		Update:      true,
 		Type:        "string",
 		Strings: models.Strings{
 			Expr: *models.Null(),
