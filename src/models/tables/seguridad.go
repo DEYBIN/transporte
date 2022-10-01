@@ -52,7 +52,7 @@ func Seguridad_GetSchema() ([]models.Base, string) {
 		Type:        "string",
 		Strings: models.Strings{
 			Expr:      *models.Null(),
-			Min:       5,
+			Min:       3,
 			Max:       100,
 			UpperCase: true,
 		},
@@ -61,10 +61,11 @@ func Seguridad_GetSchema() ([]models.Base, string) {
 		Name:        "l_apl1",
 		Description: "l_apl1",
 		Required:    true,
+		Update:      true,
 		Type:        "string",
 		Strings: models.Strings{
 			Expr:      *models.Null(),
-			Min:       5,
+			Min:       3,
 			Max:       50,
 			UpperCase: true,
 		},
@@ -73,6 +74,7 @@ func Seguridad_GetSchema() ([]models.Base, string) {
 		Name:        "l_apl2",
 		Description: "l_apl2",
 		Required:    true,
+		Update:      true,
 		Type:        "string",
 		Strings: models.Strings{
 			Expr:      *models.Null(),
@@ -108,6 +110,7 @@ func Seguridad_GetSchema() ([]models.Base, string) {
 	Seguridad = append(Seguridad, models.Base{
 		Name:        "k_carg",
 		Description: "k_carg",
+		Required:    true,
 		Update:      true,
 		Type:        "uint64",
 		Uint: models.Uints{
