@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"transporte/src/controller"
+	"transporte/src/library/date"
 	"transporte/src/library/sqlquery"
 	"transporte/src/middleware"
 	"transporte/src/models/tables"
@@ -18,8 +19,12 @@ func RutasServicio(r *mux.Router) {
 	s.Handle("/get/info-cls-a/data/", middleware.Autentication(http.HandlerFunc(allServicio))).Methods("GET")
 	s.Handle("/get/generate-fact/{id_serv}", middleware.Autentication(http.HandlerFunc(serviceFact))).Methods("GET")
 	s.Handle("/get/info-cla-o/data/{id_serv}", middleware.Autentication(http.HandlerFunc(oneServicio))).Methods("GET")
+	s.Handle("/get/service-cliente/data/{n_docu}", middleware.Autentication(http.HandlerFunc(servicioCliente))).Methods("GET")
 	s.Handle("/update/info-reg-o/data/{id_serv}", middleware.Autentication(http.HandlerFunc(updateServicio))).Methods("PUT")
 	s.Handle("/create/info-reg-o/data/", middleware.Autentication(http.HandlerFunc(insertServicio))).Methods("POST")
+	s.Handle("/update/service-alta/data/{id_serv}", middleware.Autentication(http.HandlerFunc(darAlta))).Methods("PUT")
+	s.Handle("/update/service-baja/data/{id_serv}", middleware.Autentication(http.HandlerFunc(darBaja))).Methods("PUT")
+
 }
 
 func allServicio(w http.ResponseWriter, r *http.Request) {
@@ -168,6 +173,117 @@ func oneServicio(w http.ResponseWriter, r *http.Request) {
 	//get allData from database
 	dataServicio := sqlquery.NewQuerys("Servicios").Select("id_serv,c_year,c_mes,n_docu,f_fact,s_impo,c_plac,k_stad,f_digi").Where("id_serv", "=", id_serv).Exec().One()
 	response.Data = dataServicio
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(response)
+}
+
+func darAlta(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content Type", "Aplication-Json")
+	response := controller.NewResponseManager()
+	params := mux.Vars(r)
+	id_serv := params["id_serv"]
+	if id_serv == "" {
+		response.Msg = "Error to write service"
+		response.StatusCode = 400
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	data_body := make(map[string]interface{})
+	data_body["k_stad"] = int64(0)
+	// retorna fecha de formato string dd/mm/yyyy (America Bogota)
+	data_body["f_fact"] = date.GetFechaLocationString()
+
+	data_body["where"] = map[string]interface{}{"id_serv": id_serv}
+	var data_update []map[string]interface{}
+	data_update = append(data_update, data_body)
+
+	schema, table := tables.Servicios_GetSchema()
+	servicio := sqlquery.SqlLibExec{}
+	err := servicio.New(data_update, table).Update(schema)
+	if err != nil {
+		response.Msg = err.Error()
+		response.StatusCode = 300
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	err = servicio.Exec()
+	if err != nil {
+		response.Msg = err.Error()
+		response.StatusCode = 300
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(response)
+}
+
+func darBaja(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content Type", "Aplication-Json")
+	response := controller.NewResponseManager()
+	params := mux.Vars(r)
+	id_serv := params["id_serv"]
+	if id_serv == "" {
+		response.Msg = "Error to write service"
+		response.StatusCode = 400
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	data_body := make(map[string]interface{})
+	data_body["k_stad"] = int64(0)
+
+	data_body["where"] = map[string]interface{}{"id_serv": id_serv}
+	var data_update []map[string]interface{}
+	data_update = append(data_update, data_body)
+
+	schema, table := tables.Servicios_GetSchema()
+	servicio := sqlquery.SqlLibExec{}
+	err := servicio.New(data_update, table).Update(schema)
+	if err != nil {
+		response.Msg = err.Error()
+		response.StatusCode = 300
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	err = servicio.Exec()
+	if err != nil {
+		response.Msg = err.Error()
+		response.StatusCode = 300
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(response)
+}
+
+func servicioCliente(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content Type", "Aplication-Json")
+	response := controller.NewResponseManager()
+	params := mux.Vars(r)
+	// id_serv := params["id_serv"]
+	n_docu := params["n_docu"]
+	if n_docu == "" {
+		response.Msg = "Error to get service client"
+		response.StatusCode = 400
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	//get allData from database
+	//get all Data from database
+	dataServicio := sqlquery.NewQuerys("Servicios").Select("c_year,c_mes,f_fact,c_plac").Where("n_docu", "=", n_docu).Exec().All()
+	response.Data["services"] = dataServicio
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)
 }

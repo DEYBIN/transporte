@@ -77,7 +77,10 @@ func insertUser(w http.ResponseWriter, r *http.Request) {
 	}
 	//datos insertado
 	returnData := seguridad.Data[0]
+	delete(returnData, "id")
 	delete(returnData, "l_pass")
+	delete(returnData, "users")
+	delete(returnData, "n_docu")
 	response.Data = returnData
 
 	w.WriteHeader(http.StatusOK)

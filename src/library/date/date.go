@@ -14,3 +14,14 @@ func CheckDate(date string) error {
 	}
 	return nil
 }
+
+/**
+ * Retorna fecha en formato dd/mm/yyyy en zona horaria  (America/Bogota)
+ * Return [string] : fecha  formato string dd/mm/yyyy (America/Bogota)
+ */
+ func GetFechaLocationString() string {
+	loc, _ := time.LoadLocation("America/Bogota")
+	t := time.Now().In(loc).Format("02/01/2006")
+
+	return t
+}

@@ -14,8 +14,8 @@ func Servicios_GetSchema() ([]models.Base, string) {
 		Name:        "id_serv",
 		Description: "id_serv",
 		Required:    true,
-		Important: true,
-		Default: id_serv,
+		Important:   true,
+		Default:     id_serv,
 		Type:        "string",
 		Strings: models.Strings{
 			Expr: *models.Null(),
@@ -98,6 +98,7 @@ func Servicios_GetSchema() ([]models.Base, string) {
 	Servicios = append(Servicios, models.Base{
 		Name:        "f_digi",
 		Description: "f_digi",
+		Type:        "date",
 	})
 	return Servicios, tableName
 }
