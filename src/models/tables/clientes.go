@@ -79,7 +79,7 @@ func Clientes_GetSchema() ([]models.Base, string) {
 		Type:        "string",
 		Strings: models.Strings{
 			Expr:      *models.Null(),
-			Min:       20,
+			Min:       10,
 			Max:       400,
 			UpperCase: true,
 		},

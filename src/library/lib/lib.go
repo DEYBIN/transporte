@@ -45,3 +45,12 @@ func BytesToFloat64(bytes []byte) float64 {
 
 	return f
 }
+
+func IndexOfStrings(data []string, key string) int {
+	for i, v := range data {
+		if v == key {
+			return i
+		}
+	}
+	return -1
+}

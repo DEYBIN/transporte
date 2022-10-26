@@ -92,7 +92,7 @@ func Servicios_GetSchema() ([]models.Base, string) {
 		Update:      true,
 		Type:        "uint64",
 		Uint: models.Uints{
-			Max: 10,
+			Max: 5,
 		},
 	})
 	Servicios = append(Servicios, models.Base{

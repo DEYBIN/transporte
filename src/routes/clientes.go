@@ -46,7 +46,7 @@ func filterCliente(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	filterCliente := sqlquery.NewQuerys("Clientes").Select("n_docu,l_clie").Like("n_docu", n_docu+"%").OrLike("l_clie", n_docu+"%").Exec().All()
-	response.Data["clientes"] = filterCliente
+	response.Data["data"] = filterCliente
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)
 }

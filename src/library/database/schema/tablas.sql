@@ -50,7 +50,7 @@ CREATE TABLE transporte.dbo.ClientesCars (
 
 
 CREATE TABLE Servicios (
-	id_serv varchar(36)  NOT NULL,
+	id_serv varchar(36)  NOT NULL PRIMARY KEY IDENTITY(1,1),
 	c_year char(4)  NOT NULL,
 	c_mes char(2)  NOT NULL,
 	n_docu varchar(11)  NOT NULL,
@@ -63,3 +63,13 @@ CREATE TABLE Servicios (
     FOREIGN KEY (c_plac) REFERENCES ClientesCars(c_plac),
     FOREIGN KEY (n_docu) REFERENCES Clientes(n_docu)
 );
+CREATE TABLE ServiciosDetalle (
+	id_serv varchar(36)  NOT NULL,
+	c_year char(4)  NOT NULL,
+	c_mes char(2)  NOT NULL,
+	f_pago varchar(10) NOT NULL,
+	s_impo numeric(20,7) DEFAULT 0,
+	k_stad int DEFAULT 0,
+    FOREIGN KEY (id_serv) REFERENCES Servicios(id_serv)
+);
+

@@ -2,10 +2,12 @@ package routes
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"transporte/src/controller"
 	"transporte/src/library/date"
+	"transporte/src/library/lib"
 	"transporte/src/library/sqlquery"
 	"transporte/src/middleware"
 	"transporte/src/models/tables"
@@ -24,6 +26,7 @@ func RutasServicio(r *mux.Router) {
 	s.Handle("/create/info-reg-o/data/", middleware.Autentication(http.HandlerFunc(insertServicio))).Methods("POST")
 	s.Handle("/update/service-alta/data/{id_serv}", middleware.Autentication(http.HandlerFunc(darAlta))).Methods("PUT")
 	s.Handle("/update/service-baja/data/{id_serv}", middleware.Autentication(http.HandlerFunc(darBaja))).Methods("PUT")
+	s.Handle("/get/det-fact/{id_serv}", middleware.Autentication(http.HandlerFunc(detalleFactura))).Methods("GET")
 
 }
 
@@ -164,7 +167,7 @@ func oneServicio(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id_serv := params["id_serv"]
 	if id_serv == "" {
-		response.Msg = "Error to write the service"
+		response.Msg = "Error to get the service"
 		response.StatusCode = 400
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(response)
@@ -280,10 +283,93 @@ func servicioCliente(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(response)
 		return
 	}
-	//get allData from database
 	//get all Data from database
-	dataServicio := sqlquery.NewQuerys("Servicios").Select("c_year,c_mes,f_fact,c_plac").Where("n_docu", "=", n_docu).Exec().All()
+	dataServicio := sqlquery.NewQuerys("Servicios").Select("c_year,c_mes,f_fact,s_impo,c_plac,k_stad,f_digi,id_serv").Where("n_docu", "=", n_docu).Exec().All()
+	if len(dataServicio) <= 0 {
+		response.Msg = "cliente no cuenta con ningun servicio"
+		//Mensaje informativo
+		response.StatusCode = 100
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
 	response.Data["services"] = dataServicio
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(response)
+}
+
+func detalleFactura(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content Type", "Aplication-Json")
+	response := controller.NewResponseManager()
+
+	params := mux.Vars(r)
+	id_serv := params["id_serv"]
+
+	if id_serv == "" {
+		response.Msg = "Error to get fact client"
+		response.StatusCode = 400
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	
+	var fact []map[string]interface{}
+	fact = append(fact, map[string]interface{}{
+		"periodo": "2022-04",
+	})
+	fact = append(fact, map[string]interface{}{
+		"periodo": "2022-05",
+	})
+	var newFact []string
+	for _, v := range fact {
+		newFact = append(newFact, v["periodo"].(string))
+
+	}
+	fmt.Println(newFact)
+	index := lib.IndexOfStrings(newFact, "2022-08")
+	fmt.Println(index)
+
+	date_fact := date.GetDate("02/04/2020")
+	date_now := date.GetDateLocation()
+	//date_end := date.GetLastDateOfMonth(date_fact)
+	/*if date_fact == date_end {
+		is_last_of_month = true
+	}*/
+
+	month_init := int64(date_fact.Month())
+	year_init := date_fact.Year()
+	month_now := int64(date_now.Month())
+	year_now := date_now.Year()
+
+	//var data_facturaciones []map[string]interface{}
+	var month = int64(12)
+
+	for i := year_init; i <= year_now; i++ {
+		if i == year_now {
+			month = month_now
+		}
+		for e := month_init; e <= month; e++ {
+			// fmt.Println(i, e)
+			year := fmt.Sprintf("%v", i)
+			month := fmt.Sprintf("%02d", e)
+			if lib.IndexOfStrings(newFact, year+"-"+month) == -1 {
+				fmt.Println(year, month)
+			}
+		}
+
+		month_init = 1
+	}
+
+	dataServicio := sqlquery.NewQuerys("ServiciosDetalle").Select().Where("id_serv", "=", id_serv).And("k_stad", "=", 0).Exec().All()
+	if len(dataServicio) <= 0 {
+		response.Msg = "Servicio no existe o bien se encuentra suspendido"
+		response.StatusCode = 400
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	response.Data["detalleFact"] = dataServicio
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)
 }
