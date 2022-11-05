@@ -8,7 +8,7 @@ import (
 
 func ServiciosDetalle_GetSchema() ([]models.Base, string) {
 	var ServiciosDetalle []models.Base
-	tableName := "_" + "ServiciosDetalle"
+	tableName := "ServiciosDetalle"
 	id_serv := uuid.New().String()
 	ServiciosDetalle = append(ServiciosDetalle, models.Base{
 		Name:        "id_serv",
